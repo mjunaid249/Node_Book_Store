@@ -2,8 +2,10 @@ import express from "express";
 const app = express();
 import "./database/connect.js";
 import { Book } from "./models/bookModel.js";
+import cors from "cors";
 
 app.use(express.json());
+app.use(cors());
 
 //Port
 const PORT = process.env.PORT || 3000;
