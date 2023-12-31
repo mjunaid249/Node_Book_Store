@@ -12,24 +12,26 @@ export const CreateBooks = () => {
 
   const navigate = useNavigate();
 
-  function handleSaveBook() {
-    const data = {
-      title,
-      author,
-      publishYear,
-    };
+  async function handleSaveBook() {
     setLoading(true);
-    axios
-      .post("http://loaclhost:3000/books", data)
-      .then(() => {
-        setLoading(false);
-        navigate("/");
-      })
-      .catch((err) => {
-        console.log("Error in Posting");
-        alert("an error occured!");
-        setLoading(false);
+    try {
+      const response = await fetch("http://localhost:3000/books", {
+        method: "post",
+        body: JSON.stringify({ title, author, publishYear }),
+        headers: {
+          "Content-Type": "application/json",
+        },
       });
+      setLoading(false);
+      alert("Book Added!");
+      setAuthor("");
+      setTitle("");
+      setPublishYear("");
+      const result = await response.json();
+      console.log(result);
+    } catch (error) {
+      console.log(error);
+    }
   }
 
   return (
@@ -42,11 +44,31 @@ export const CreateBooks = () => {
           <label className="text-xl mr-4 text-gray-500 ">Tite</label>
           <input
             type="text"
+            name="title"
             value={title}
             onChange={(e) => setTitle(e.target.value)}
             className="border-2 border-gray-500 px-4 py-2 w-full "
           />
+          <label className="text-xl mr-4 text-gray-500 ">Author</label>
+          <input
+            name="author"
+            type="text"
+            value={author}
+            onChange={(e) => setAuthor(e.target.value)}
+            className="border-2 border-gray-500 px-4 py-2 w-full "
+          />
+          <label className="text-xl mr-4 text-gray-500 ">Publish Year</label>
+          <input
+            name="publisYear"
+            type="number"
+            value={publishYear}
+            onChange={(e) => setPublishYear(e.target.value)}
+            className="border-2 border-gray-500 px-4 py-2 w-full "
+          />
         </div>
+        <button className="p-2 m-8 bg-sky-300" onClick={handleSaveBook}>
+          Save
+        </button>
       </div>
     </div>
   );
